@@ -35,19 +35,19 @@ Dashboard — Live Streamlit app visualizing job trends, top cities, companies, 
 
 ## 🛠️ Tech Stack
 
-Layer  Tool
+Layer - Tool
 
-Language  Python 3.12
+Language - Python 3.12
 
-Database  Supabase (PostgreSQL)
+Database - Supabase (PostgreSQL)
 
-Transform  Pandas
+Transform - Pandas
 
-Dashboard  Streamlit + Plotly
+Dashboard - Streamlit + Plotly
 
-Scheduling  GitHub Actions
+Scheduling - GitHub Actions
 
-Deployment  Streamlit Cloud
+Deployment - Streamlit Cloud
 
 ## 📁 Project Structure
 
