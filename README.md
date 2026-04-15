@@ -1,11 +1,12 @@
-# 📊 Job Market ETL Pipeline
+## 📊 Job Market ETL Pipeline
 
 An automated ETL pipeline that extracts job postings from multiple job boards, transforms and cleans the raw data, loads it into a PostgreSQL database, and visualizes hiring trends on a live dashboard.
 🔗 Live Dashboard: job-market-trends.streamlit.app
 
-# 🏗️ Architecture
+## 🏗️ Architecture
 
 [Raw Jobs Table (Supabase)]
+
         ↓  Extract
 [Python Transform Layer]
         ↓  Clean, Normalize, Enrich
