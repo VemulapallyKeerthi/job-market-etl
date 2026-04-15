@@ -8,11 +8,16 @@ from transform.clean_jobs import clean_jobs
 
 load_dotenv()
 
+# Ensure logs directory exists
+os.makedirs("logs", exist_ok=True)
+
+# Setup logging
 logging.basicConfig(
     filename='logs/etl.log',
     level=logging.INFO,
     format='%(asctime)s — %(levelname)s — %(message)s'
 )
+
 
 def get_supabase_client():
     url = os.getenv("SUPABASE_URL")
