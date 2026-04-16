@@ -26,13 +26,41 @@ def get_supabase_client():
 
 
 def fetch_raw_jobs(client):
-    response = client.table("jobs").select("*").execute()
-    return response.data
+    """Fetch all jobs from the raw jobs table using pagination."""
+    all_jobs = []
+    page_size = 1000
+    offset = 0
+
+    while True:
+        response = client.table("jobs").select("*").range(offset, offset + page_size - 1).execute()
+        batch = response.data
+        if not batch:
+            break
+        all_jobs.extend(batch)
+        if len(batch) < page_size:
+            break
+        offset += page_size
+
+    return all_jobs
 
 
 def get_existing_raw_ids(client):
-    response = client.table("jobs_clean").select("raw_job_id").execute()
-    return {row["raw_job_id"] for row in response.data}
+    """Fetch all already-loaded raw_job_ids using pagination."""
+    all_ids = set()
+    page_size = 1000
+    offset = 0
+
+    while True:
+        response = client.table("jobs_clean").select("raw_job_id").range(offset, offset + page_size - 1).execute()
+        batch = response.data
+        if not batch:
+            break
+        all_ids.update(row["raw_job_id"] for row in batch)
+        if len(batch) < page_size:
+            break
+        offset += page_size
+
+    return all_ids
 
 
 def log_etl_run(client, jobs_fetched, jobs_inserted, jobs_skipped, status, error_msg=None):
