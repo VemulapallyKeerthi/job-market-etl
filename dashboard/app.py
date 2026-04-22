@@ -44,18 +44,48 @@ st.markdown("""
         div[data-testid="stSidebar"] {
             background-color: #1a1d2e;
         }
-        /* Change multiselect tags to blue */
-        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] {
-            background-color: #4f8ef7 !important;
+        /* Sidebar label color */
+        div[data-testid="stSidebar"] label {
+            color: #ffffff !important;
         }
-        /* Change checkbox accent to blue */
-        .stCheckbox input:checked + div {
-            background-color: #4f8ef7 !important;
-            border-color: #4f8ef7 !important;
+        /* Multiselect container */
+        div[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+            background-color: #ffffff !important;
+            border: 1.5px solid #000000 !important;
+            border-radius: 6px !important;
+            color: #000000 !important;
         }
+        /* Multiselect selected tags — white with black text and outline */
+        div[data-testid="stSidebar"] span[data-baseweb="tag"] {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #000000 !important;
+        }
+        /* Multiselect tag close button */
+        div[data-testid="stSidebar"] span[data-baseweb="tag"] span[role="presentation"] {
+            color: #000000 !important;
+        }
+        /* Multiselect input text */
+        div[data-testid="stSidebar"] input {
+            color: #000000 !important;
+        }
+        /* Checkbox label */
+        div[data-testid="stSidebar"] .stCheckbox label {
+            color: #ffffff !important;
+        }
+        /* Checkbox box — white with black border */
+        div[data-baseweb="checkbox"] div {
+            background-color: #ffffff !important;
+            border-color: #000000 !important;
+        }
+        /* Checkbox checked state — white with black border */
         div[data-baseweb="checkbox"] input:checked ~ div {
-            background-color: #4f8ef7 !important;
-            border-color: #4f8ef7 !important;
+            background-color: #ffffff !important;
+            border-color: #000000 !important;
+        }
+        /* Checkbox checkmark color */
+        div[data-baseweb="checkbox"] input:checked ~ div svg path {
+            fill: #000000 !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -85,7 +115,11 @@ def load_data():
             break
         offset += page_size
     df = pd.DataFrame(all_rows)
-    df["posted_date"] = pd.to_datetime(df["posted_date"])
+    if df.empty:
+        st.error("No data found in jobs_clean table.")
+        st.stop()
+    if "posted_date" in df.columns:
+        df["posted_date"] = pd.to_datetime(df["posted_date"])
     return df
 
 # --- Load data ---
@@ -234,22 +268,25 @@ st.plotly_chart(fig, use_container_width=True)
 
 # --- Row 5: Postings over time ---
 st.markdown('<div class="section-header">📅 Job Postings Over Time</div>', unsafe_allow_html=True)
-time_counts = filtered.groupby("posted_date").size().reset_index(name="count")
-fig = px.line(time_counts, x="posted_date", y="count", markers=True,
-              line_shape="spline", color_discrete_sequence=[ACCENT])
-fig.update_layout(height=320, paper_bgcolor="rgba(0,0,0,0)",
-                  plot_bgcolor="rgba(0,0,0,0)", font_color="#9099b0")
-fig.update_xaxes(showgrid=False)
-fig.update_yaxes(showgrid=False)
-st.plotly_chart(fig, use_container_width=True)
+if "posted_date" in filtered.columns:
+    time_counts = filtered.groupby("posted_date").size().reset_index(name="count")
+    fig = px.line(time_counts, x="posted_date", y="count", markers=True,
+                  line_shape="spline", color_discrete_sequence=[ACCENT])
+    fig.update_layout(height=320, paper_bgcolor="rgba(0,0,0,0)",
+                      plot_bgcolor="rgba(0,0,0,0)", font_color="#9099b0")
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(showgrid=False)
+    st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("---")
 
 # --- Filterable Job Table ---
 st.markdown('<div class="section-header">📋 Browse Jobs</div>', unsafe_allow_html=True)
+table_cols = ["title", "company", "city", "state", "is_remote",
+              "job_level", "job_category", "source", "posted_date"]
+available_cols = [c for c in table_cols if c in filtered.columns]
 st.dataframe(
-    filtered[["title", "company", "city", "state", "is_remote",
-              "job_level", "job_category", "source", "posted_date"]].sort_values("posted_date", ascending=False),
+    filtered[available_cols].sort_values("posted_date", ascending=False) if "posted_date" in filtered.columns else filtered[available_cols],
     use_container_width=True,
     hide_index=True
 )
