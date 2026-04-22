@@ -44,46 +44,37 @@ st.markdown("""
         div[data-testid="stSidebar"] {
             background-color: #1a1d2e;
         }
-        /* Sidebar label color */
         div[data-testid="stSidebar"] label {
             color: #ffffff !important;
         }
-        /* Multiselect container */
         div[data-testid="stSidebar"] div[data-baseweb="select"] > div {
             background-color: #ffffff !important;
             border: 1.5px solid #000000 !important;
             border-radius: 6px !important;
             color: #000000 !important;
         }
-        /* Multiselect selected tags — white with black text and outline */
         div[data-testid="stSidebar"] span[data-baseweb="tag"] {
             background-color: #ffffff !important;
             color: #000000 !important;
             border: 1px solid #000000 !important;
         }
-        /* Multiselect tag close button */
         div[data-testid="stSidebar"] span[data-baseweb="tag"] span[role="presentation"] {
             color: #000000 !important;
         }
-        /* Multiselect input text */
         div[data-testid="stSidebar"] input {
             color: #000000 !important;
         }
-        /* Checkbox label */
         div[data-testid="stSidebar"] .stCheckbox label {
             color: #ffffff !important;
         }
-        /* Checkbox box — white with black border */
         div[data-baseweb="checkbox"] div {
             background-color: #ffffff !important;
             border-color: #000000 !important;
         }
-        /* Checkbox checked state — white with black border */
         div[data-baseweb="checkbox"] input:checked ~ div {
             background-color: #ffffff !important;
             border-color: #000000 !important;
         }
-        /* Checkbox checkmark color */
         div[data-baseweb="checkbox"] input:checked ~ div svg path {
             fill: #000000 !important;
         }
@@ -102,6 +93,15 @@ def get_client():
 @st.cache_data(ttl=3600)
 def load_data():
     client = get_client()
+    try:
+        response = client.table("jobs_clean").select("*").range(0, 9).execute()
+        if not response.data:
+            st.error("Supabase returned empty response. Check RLS policies.")
+            st.stop()
+    except Exception as e:
+        st.error(f"Supabase connection error: {e}")
+        st.stop()
+
     all_rows = []
     page_size = 1000
     offset = 0
