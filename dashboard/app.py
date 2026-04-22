@@ -44,39 +44,14 @@ st.markdown("""
         div[data-testid="stSidebar"] {
             background-color: #1a1d2e;
         }
-        div[data-testid="stSidebar"] label {
+        /* Sidebar filter tags — blue */
+        span[data-baseweb="tag"] {
+            background-color: #4f8ef7 !important;
             color: #ffffff !important;
+            border: none !important;
         }
-        div[data-testid="stSidebar"] div[data-baseweb="select"] > div {
-            background-color: #ffffff !important;
-            border: 1.5px solid #000000 !important;
-            border-radius: 6px !important;
-            color: #000000 !important;
-        }
-        div[data-testid="stSidebar"] span[data-baseweb="tag"] {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border: 1px solid #000000 !important;
-        }
-        div[data-testid="stSidebar"] span[data-baseweb="tag"] span[role="presentation"] {
-            color: #000000 !important;
-        }
-        div[data-testid="stSidebar"] input {
-            color: #000000 !important;
-        }
-        div[data-testid="stSidebar"] .stCheckbox label {
+        span[data-baseweb="tag"] span {
             color: #ffffff !important;
-        }
-        div[data-baseweb="checkbox"] div {
-            background-color: #ffffff !important;
-            border-color: #000000 !important;
-        }
-        div[data-baseweb="checkbox"] input:checked ~ div {
-            background-color: #ffffff !important;
-            border-color: #000000 !important;
-        }
-        div[data-baseweb="checkbox"] input:checked ~ div svg path {
-            fill: #000000 !important;
         }
     </style>
 """, unsafe_allow_html=True)
